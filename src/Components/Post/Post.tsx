@@ -9,34 +9,38 @@ import Button from "../Button/Button";
 import Typography from "@mui/material/Typography";
 import importedUsers from "../../data/users.json";
 import moment from "moment";
-import { TPost } from '../../lib/types'
+import { type TPost } from '../../lib/types';
+//import ReactDOM from 'react-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
+//import { faSolid } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
+import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
 
-//import FontAwesomeIcon from from '@fortawesome/react-fontawesome';
 
-
-
-const Post = ({ post, addLike }: { post: TPost; addLike: any }) => {
+const Post = ({ post, addLike, removeLike }: { post: TPost; addLike: (postId: string)=> void; removeLike: (postId: string)=> void }) => {
   let timePassed: undefined | string = moment(
     new Date(post.published_at)
   ).fromNow();
 
   // generics ( we arew also using generics in react hooks)
-  // we write <T,> instead of <T> because its covert to js; ts gonna think were writing jsx element; <T,> prevent it. use holder syntax to avoid it
-  // In generic functions ( that recieve and return something) we are specifinig a relationship betweeen the func args and othe return value- coth should be from the same type T
+  // we write <T,> instead of <T> because its covert to js; ts gonna think were writing jsx element; <T,> prevent it. use older syntax to avoid it
+  // In generic functions ( that recieve and return something) we are specifinig a relationship betweeen the func args and the return value- both should be from the same type T
   // const buildTypeDynamicArr = <T,>(value: T): T[] => {
 
   //   return [value];
   // }
   //functions old syntax for more readable generic function
-  function buildTypeDynamicArr<T>(value: T): T[] {
-    return [value];
-  }
+  // function buildTypeDynamicArr<T>(value: T): T[] {
+  //   return [value];
+  // }
 
-  console.log(buildTypeDynamicArr("hellol worlds"));
-  console.log(buildTypeDynamicArr(5));
+  // console.log(buildTypeDynamicArr("hellol worlds"));
+  // console.log(buildTypeDynamicArr(5));
 
   return (
     <div key={post.id} className="Post">
+  
       <Card
         sx={{ width: 900, backgroundColor: "#343434", marginBottom: "5px" }}
       >
@@ -76,12 +80,17 @@ const Post = ({ post, addLike }: { post: TPost; addLike: any }) => {
             <CardMedia
               component="img"
               alt={post.title}
-              sx={{ maxHeight: "700px", borderRadius: "4%" }}
+              sx={{ maxHeight: "700px", borderRadius: "4%", objectFit: "contain"}}
               image={post.imageUrl || undefined}
             />
           )}
         </CardContent>
         <CardActions>
+          <div style={{display:"flex",backgroundColor: "green",borderRadius: "10px"}}>
+          <FontAwesomeIcon onClick={() => addLike(post.id)} icon={faArrowUp}/>
+          <span>{post.likes || "Vote"}</span> 
+          <FontAwesomeIcon onClick={() => removeLike(post.id)} icon={faArrowDown}/>
+          </div>
           <Button
             type="button"
             autoFocus={true}
@@ -90,8 +99,6 @@ const Post = ({ post, addLike }: { post: TPost; addLike: any }) => {
           >
             Like
           </Button>
-          <span>{post.likes}</span>
-
           <Button
             type="button"
             autoFocus={false}

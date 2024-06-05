@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import PostComp from "../Post/Post";
 import importedPosts from "../../data/posts.json";
 //ts type post
-import { TPost } from '../../lib/types';
+import { type TPost } from '../../lib/types';
 
 const Posts = () => {
   console.log(JSON.stringify(importedPosts));
@@ -35,13 +35,23 @@ const Posts = () => {
     setPosts(newPosts);
   };
 
+  const removeLike = (postId: string) => {
+    const newPosts = posts.map((post) =>{
+      if(post.id != postId)
+        return post
+      else
+      return {...post,likes: post.likes - 1}
+    })
+
+    setPosts(newPosts);
+  };
   return (
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
       className="Posts"
     >
       {posts.map((post) => (
-        <PostComp key={post.id} post={post} addLike={addLike}></PostComp>
+        <PostComp key={post.id} post={post} addLike={addLike} removeLike={removeLike}></PostComp>
       ))}
     </div>
   );

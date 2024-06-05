@@ -14,8 +14,13 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
+// import { library } from '@fortawesome/fontawesome-svg-core'
+// import { fas } from '@fortawesome/free-solid-svg-icons'
+
+// library.add(fas);
 
 function App() {
+  
   const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(

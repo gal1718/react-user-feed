@@ -5,54 +5,35 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
+import Button from "../Button/Button";
 import Typography from "@mui/material/Typography";
 import importedUsers from "../../data/users.json";
+import moment from "moment";
+import { TPost } from '../../lib/types'
+
 //import FontAwesomeIcon from from '@fortawesome/react-fontawesome';
 
-//const prop =
-// type Prop = {
-//   id: string;
-//   title: string;
-//   body: string;
-//   publish_date: string;
-//   imageUrl: string | undefined | null;
-//   user_id: string;
-// };
-type Post = {
-  id: string;
-  user_id: string;
-  title: string;
-  body: string;
-  likes: number;
-  published_at: string;
-  imageUrl?: string;
-};
 
-const Post = ({ post, addLike }: { post: Post, addLike: any}) => {
-  const calculateTimePass = (post_date: string) => {
-    // Given date in ISO 8601 format
-    const givenDate = new Date(post_date);
 
-    // Current date
-    const currentDate = new Date();
+const Post = ({ post, addLike }: { post: TPost; addLike: any }) => {
+  let timePassed: undefined | string = moment(
+    new Date(post.published_at)
+  ).fromNow();
 
-    // Calculate the difference in milliseconds
-    const diffMilliseconds: number =
-      currentDate.getTime() - givenDate.getTime();
+  // generics ( we arew also using generics in react hooks)
+  // we write <T,> instead of <T> because its covert to js; ts gonna think were writing jsx element; <T,> prevent it. use holder syntax to avoid it
+  // In generic functions ( that recieve and return something) we are specifinig a relationship betweeen the func args and othe return value- coth should be from the same type T
+  // const buildTypeDynamicArr = <T,>(value: T): T[] => {
 
-    // Convert the difference to hours and minutes
-    const diffHours = Math.floor(diffMilliseconds / (1000 * 60 * 60));
-
-    console.log(`Time difference is ${diffHours} hours`);
-    return diffHours;
-  };
-
-  // const handleLike = () =>{
-  //   console.log("handleVClick called post_id " + post.id);
-  //   addLike(post.id);
+  //   return [value];
   // }
+  //functions old syntax for more readable generic function
+  function buildTypeDynamicArr<T>(value: T): T[] {
+    return [value];
+  }
 
+  console.log(buildTypeDynamicArr("hellol worlds"));
+  console.log(buildTypeDynamicArr(5));
 
   return (
     <div key={post.id} className="Post">
@@ -74,9 +55,7 @@ const Post = ({ post, addLike }: { post: Post, addLike: any}) => {
                 ></img>
               </div>
             </div>
-            <div style={{ marginLeft: "2%" }}>
-              • {calculateTimePass(post.published_at)} hr. ago
-            </div>
+            <div style={{ marginLeft: "2%" }}>• {timePassed}</div>
           </div>
           <Typography
             gutterBottom
@@ -97,20 +76,30 @@ const Post = ({ post, addLike }: { post: Post, addLike: any}) => {
             <CardMedia
               component="img"
               alt={post.title}
-              sx={{ maxHeight: "600px", borderRadius: "4%" }}
+              sx={{ maxHeight: "700px", borderRadius: "4%" }}
               image={post.imageUrl || undefined}
             />
           )}
         </CardContent>
         <CardActions>
-          <span style={{ backgroundColor: "grey" }}>
-            <Button size="small"  onClick = {() => addLike(post.id)}>
-              Like
-            </Button>
-            <span>{post.likes}</span>
-            <i className="fa-solid fa-computer-classic"></i>
-          </span>
-          <Button size="small">Comment</Button>
+          <Button
+            type="button"
+            autoFocus={true}
+            style={{ backgroundColor: "green" }}
+            onClick={() => addLike(post.id)}
+          >
+            Like
+          </Button>
+          <span>{post.likes}</span>
+
+          <Button
+            type="button"
+            autoFocus={false}
+            style={{ backgroundColor: "red" }}
+            onClick={() => alert("comment")}
+          >
+            Comment
+          </Button>
         </CardActions>
       </Card>
     </div>

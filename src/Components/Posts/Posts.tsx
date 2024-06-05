@@ -3,25 +3,16 @@ import React from "react";
 import { useEffect, useState } from "react";
 import PostComp from "../Post/Post";
 import importedPosts from "../../data/posts.json";
-//import { hardCodeddImgs } from "../../constans";
-
-type Post = {
-  id: string;
-  user_id: string;
-  title: string;
-  body: string;
-  likes: number;
-  published_at: string;
-  imageUrl?: string;
-};
+//ts type post
+import { TPost } from '../../lib/types';
 
 const Posts = () => {
   console.log(JSON.stringify(importedPosts));
 
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<(TPost)[]>([]);
 
   useEffect(() => {
-    const dataPromise = new Promise<Post[]>((resolve, reject) => {
+    const dataPromise = new Promise<TPost[]>((resolve, reject) => {
       if (importedPosts.length > 0) resolve(importedPosts);
       else reject("data is not available");
     });

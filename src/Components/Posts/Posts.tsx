@@ -6,7 +6,17 @@ import { Link } from "react-router-dom";
 import { SxProps } from "@mui/material/styles";
 
 const sortStyle: SxProps = {
-  marginRight: "56%",
+  marginRight: "55%",
+  '.MuiSelect-root': {
+    fontSize: '0.8rem',
+    height: '30px',
+    width: '120px',
+    color: 'blue'
+  },
+  '.MuiMenuItem-root': {
+    fontSize: '0.8rem',
+    color: 'blue'
+  }
 };
 
 const Posts = ({

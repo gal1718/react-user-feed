@@ -2,9 +2,11 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import PostComp from "../Post/Post";
 import { type Post, type User, type Comment } from "../../utils/dataUtils";
-import MDEditor, { ContextStore } from "@uiw/react-md-editor";
+import Comments from "../Comments/comments";
+import PostComp from "../Post/Post";
+//import MDEditor, { ContextStore } from "@uiw/react-md-editor";
+
 
 const PostDetailed = ({
   posts,
@@ -14,7 +16,16 @@ const PostDetailed = ({
   addLikeClicked,
   removeLikeClicked,
   users,
+  setUserCommentsLikes,
+  setUserCommentsDisLikes,
+  userCommentsLikes,
+  userCommentsDisLikes
+
 }: {
+  setUserCommentsLikes: React.Dispatch<React.SetStateAction<Comment[]>>,
+  setUserCommentsDisLikes: React.Dispatch<React.SetStateAction<Comment[]>>,
+  userCommentsLikes: Comment[],
+  userCommentsDisLikes: Comment[],
   posts: Post[];
   setUserDisLikes: React.Dispatch<React.SetStateAction<Post[]>>;
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
@@ -25,26 +36,29 @@ const PostDetailed = ({
   users: User[];
   addLikeClicked: (postId: string) => void;
 }) => {
-  const [userCommentText, setUserCommentText] = useState<string>("");
+  //const [userCommentText, setUserCommentText] = useState<string>("");
   const { postId } = useParams<{ postId: string }>();
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [value, setValue] = useState<string>("tpe something");
+  const [value, setValue] = useState<string>("");
 
   useEffect(() => {
     const post = posts.find((post) => post.id === postId);
     if (post) {
       setSelectedPost(post);
     }
-  }, [postId, posts]);
+  }, []);
 
   const handleCommentAddition = () => {
     if (!selectedPost) return;
     //set the posts with the new comment in the selected post
     //debugger;
     const newComment: Comment = {
-      post_id: selectedPost!.id,
       user_id: "123",
-      text: value,
+      body: value,
+      comments: undefined,
+      id: "",
+      published_at: Date.now().toString(),
+      likes: 0,
     };
     const newPosts = posts.map((post) => {
       if (post.id != selectedPost!.id) return post;
@@ -75,35 +89,33 @@ const PostDetailed = ({
       key={selectedPost!.id}
       className="PostDetailed"
     >
-      <PostComp
-        userLikes={userLikes}
-        userDisLikes={userDisLikes}
-        post={selectedPost!}
-        removeLikeClicked={removeLikeClicked}
-        addLikeClicked={addLikeClicked}
-        users={users}
-      ></PostComp>
       <div>
-        <input
-          placeholder="add a comment"
-          type="text"
-          onChange={(el) => setUserCommentText(el.target.value)}
-        ></input>
-        <button onClick={() => handleCommentAddition()}>Comment</button>
-        {selectedPost.comments?.map((comment, index) => (
-          <div key={index}>{comment?.text}</div>
-        ))}
-        <MDEditor
-          value={value}
-          onChange={
-            setValue as (
-              value?: string | undefined,
-              event?: React.ChangeEvent<HTMLTextAreaElement> | undefined,
-              state?: ContextStore | undefined
-            ) => void
-          }
-        />
-        <MDEditor.Markdown source={value} style={{ whiteSpace: "pre-wrap" }} />
+        <PostComp
+          userLikes={userLikes}
+          userDisLikes={userDisLikes}
+          post={selectedPost!}
+          removeLikeClicked={removeLikeClicked}
+          addLikeClicked={addLikeClicked}
+          users={users}
+        ></PostComp>
+        <div>
+          <input
+            placeholder="add a comment"
+            type="text"
+            onChange={(el) => setValue(el.target.value)}
+          ></input>
+          <button onClick={() => handleCommentAddition()}>Comment</button>
+          <Comments
+            post={selectedPost}
+            comments={selectedPost!.comments}
+            users={users}
+            userCommentsLikes={userCommentsLikes}
+            userCommentsDisLikes={userCommentsDisLikes}
+            setUserCommentsLikes={setUserCommentsLikes}
+            setUserCommentsDisLikes = {setUserCommentsDisLikes}
+  
+          ></Comments>
+        </div>
       </div>
     </div>
   );

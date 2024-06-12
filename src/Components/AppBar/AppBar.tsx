@@ -11,8 +11,8 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCrown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faCrown} from '@fortawesome/free-solid-svg-icons'
 
 function AppBarComp() {
   const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -40,19 +40,15 @@ function AppBarComp() {
   };
   return (
     <div className="AppBarComp">
-      <AppBar position="fixed">
+      <AppBar position="fixed" sx={{ backgroundColor: '#101113',borderBottom: "1px solid gray" }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <FontAwesomeIcon
-              style={{ marginRight: "15px" }}
-              className="icon"
-              icon={faCrown}
-            />
+            <FontAwesomeIcon style={{marginRight: "15px"}} className="icon" icon={faCrown} />
             <Typography
               variant="h6"
               noWrap
               component="a"
-              href="#app-bar-with-responsive-menu"
+              href="http://localhost:3000/"
               sx={{
                 mr: 2,
                 display: { xs: "none", md: "flex" },
@@ -116,7 +112,9 @@ function AppBarComp() {
               LOGO
             </Typography>
 
-            <Box sx={{ flexGrow: 0 }}>
+            <Box sx={{ flexGrow: 1 }} />
+
+            <Box sx={{ flexGrow: 0, textAlign: "right"}}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />

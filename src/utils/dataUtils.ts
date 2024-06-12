@@ -16,21 +16,21 @@ export type User = {
   sex: string;
 };
 
+// Base type for shared properties
 export type Comment = {
-  post_id: string;
-  user_id: string;
-  text: string;
-};
-
-export type Post = {
   id: string;
   user_id: string;
-  title: string;
   body: string;
   published_at: string;
-  imageUrl: string;
+  imageUrl?: string;
   likes: number;
-  comments: Comment[] | undefined;
+  comments?: Comment[] | undefined;
+};
+
+
+// Post type extending from BaseContent and adding a unique property
+export type Post = Comment & {
+  title: string;
 };
 
 export function createRandomUser(): User {

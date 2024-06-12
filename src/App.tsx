@@ -7,6 +7,7 @@ import {
   type Post,
   type User,
   type SortKey,
+  type Comment,
   createRandomUser,
   createRandomPost,
 } from "././utils/dataUtils";
@@ -28,6 +29,8 @@ function App() {
 
   const [userLikes, setUserLikes] = useState<Post[]>([]);
   const [userDisLikes, setUserDisLikes] = useState<Post[]>([]);
+  const [userCommentsLikes, setUserCommentsLikes] = useState<Comment[]>([]);
+  const [userCommentsDisLikes, setUserCommentsDisLikes] = useState<Comment[]>([]);
 
   useEffect(() => {
     const generatedUsers = Array.from({ length: 10 }, createRandomUser);
@@ -40,79 +43,79 @@ function App() {
     setPosts(generatedPosts);
   }, []);
 
-  const addLikeClicked = (postId: string) => {
+  const addLikeClicked = (contentId: string) => {
     //3 cases
     //userLikes- 0, userDislikes - 0
-    if (!userLikedPostBefore(postId) && !userDisLikedPostBefore(postId)) {
-      addUserLike(postId);
-      changePostLikes(1, postId);
+    if (!userLikedPostBefore(contentId) && !userDisLikedPostBefore(contentId)) {
+      addUserLike(contentId);
+      changePostLikes(1, contentId);
     }
     //userLikes- 0, userDislikes - 1
-    else if (!userLikedPostBefore(postId) && userDisLikedPostBefore(postId)) {
-      addUserLike(postId);
-      removeUserDisLike(postId);
-      changePostLikes(2, postId);
+    else if (!userLikedPostBefore(contentId) && userDisLikedPostBefore(contentId)) {
+      addUserLike(contentId);
+      removeUserDisLike(contentId);
+      changePostLikes(2, contentId);
     }
     //userLikes- 1, userDislikes - 0
     else {
-      removeUserLike(postId);
-      changePostLikes(-1, postId);
+      removeUserLike(contentId);
+      changePostLikes(-1, contentId);
     }
   };
 
-  const removeLikeClicked = (postId: string) => {
+  const removeLikeClicked = (contentId: string) => {
     //3 cases
     //userLikes- 0, userDislikes - 0
-    if (!userLikedPostBefore(postId) && !userDisLikedPostBefore(postId)) {
-      addUserDisLike(postId);
-      changePostLikes(-1, postId);
+    if (!userLikedPostBefore(contentId) && !userDisLikedPostBefore(contentId)) {
+      addUserDisLike(contentId);
+      changePostLikes(-1, contentId);
     }
     //userLikes- 0, userDislikes - 1
-    else if (!userLikedPostBefore(postId) && userDisLikedPostBefore(postId)) {
+    else if (!userLikedPostBefore(contentId) && userDisLikedPostBefore(contentId)) {
       //console.log("userLikes- 0, userDislikes - 1");
-      removeUserDisLike(postId);
-      changePostLikes(1, postId);
+      removeUserDisLike(contentId);
+      changePostLikes(1, contentId);
     }
     //userLikes- 1, userDislikes - 0
     else {
-      removeUserLike(postId);
-      addUserDisLike(postId);
-      changePostLikes(-2, postId);
+      removeUserLike(contentId);
+      addUserDisLike(contentId);
+      changePostLikes(-2, contentId);
     }
   };
 
-  const removeUserLike = (postId: string) => {
-    const newUserLikes = userLikes.filter((userLike) => userLike.id != postId);
+  const removeUserLike = (contentId: string) => {
+    const newUserLikes = userLikes.filter((userLike) => userLike.id != contentId);
     setUserLikes(newUserLikes);
   };
 
-  const addUserLike = (postId: string) => {
+  const addUserLike = (contentId: string) => {
     posts.forEach((post) => {
-      if (post.id === postId) {
+      if (post.id === contentId) {
         setUserLikes([...userLikes, post]); // adding the post to the user's likes
       }
     });
   };
 
-  const removeUserDisLike = (postId: string) => {
+  const removeUserDisLike = (contentId: string) => {
     const newUserDisLikes = userDisLikes.filter(
-      (userDisLike) => userDisLike.id != postId
+      (userDisLike) => userDisLike.id != contentId
     );
     setUserDisLikes(newUserDisLikes);
   };
 
-  const addUserDisLike = (postId: string) => {
+  const addUserDisLike = (contentId: string) => {
     posts.forEach((post) => {
-      if (post.id === postId) {
+      if (post.id === contentId) {
         setUserDisLikes([...userDisLikes, post]); // adding the post to the user's Dislikes
       }
     });
   };
 
-  const changePostLikes = (likes: number, postId: string) => {
+  const changePostLikes = (likes: number, contentId: string) => {
     let newNumberLikes = 0;
     const newPosts = posts.map((post) => {
-      if (post.id != postId) return post;
+      if (post.id != contentId) return post;
       else {
         newNumberLikes = post.likes + likes;
         return { ...post, likes: post.likes + likes };
@@ -122,12 +125,12 @@ function App() {
     setSelectedPost({ ...selectedPost, likes: newNumberLikes });
   };
 
-  const userLikedPostBefore = (postId: string) => {
-    return userLikes.some((LikEl) => LikEl.id === postId);
+  const userLikedPostBefore = (contentId: string) => {
+    return userLikes.some((LikEl) => LikEl.id === contentId);
   };
 
-  const userDisLikedPostBefore = (postId: string) => {
-    return userDisLikes.some((LikEl) => LikEl.id === postId);
+  const userDisLikedPostBefore = (contentId: string) => {
+    return userDisLikes.some((LikEl) => LikEl.id === contentId);
   };
 
   const sort = (objectKey: SortKey) => {
@@ -157,7 +160,7 @@ function App() {
             }
           />
           <Route
-            path="/PostDetailed/:postId"
+            path="/PostDetailed/:contentId"
             element={
               <PostDetailed
                 posts={posts}
@@ -169,6 +172,10 @@ function App() {
                 users={users}
                 addLikeClicked={addLikeClicked}
                 removeLikeClicked={removeLikeClicked}
+                userCommentsLikes = {userCommentsLikes}
+                setUserCommentsLikes = {setUserCommentsLikes}
+                userCommentsDisLikes = {userCommentsDisLikes}
+                setUserCommentsDisLikes = {setUserCommentsDisLikes}
               />
             }
           />

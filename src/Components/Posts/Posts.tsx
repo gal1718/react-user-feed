@@ -1,58 +1,59 @@
 import React from "react";
-//import axios from "axios";
-import { useEffect, useState } from "react";
 import PostComp from "../Post/Post";
-import importedPosts from "../../data/posts.json";
-//ts type post
-import { type TPost } from '../../lib/types';
+import BasicSelect from "../BasicSelect/BasicSelect";
+import { type Post, type User, type SortKey } from "../../utils/dataUtils";
+import { Link } from "react-router-dom";
+import { SxProps } from "@mui/material/styles";
 
-const Posts = () => {
-  console.log(JSON.stringify(importedPosts));
+const sortStyle: SxProps = {
+  marginRight: "56%",
+};
 
-  const [posts, setPosts] = useState<(TPost)[]>([]);
-
-  useEffect(() => {
-    const dataPromise = new Promise<TPost[]>((resolve, reject) => {
-      if (importedPosts.length > 0) resolve(importedPosts);
-      else reject("data is not available");
-    });
-
-    dataPromise
-      .then((result) => {
-        setPosts(result);
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
-  const addLike = (postId: string) => {
-    const newPosts = posts.map((post) =>{
-      if(post.id != postId)
-        return post
-      else
-      return {...post,likes: post.likes + 1}
-    })
-
-    setPosts(newPosts);
-  };
-
-  const removeLike = (postId: string) => {
-    const newPosts = posts.map((post) =>{
-      if(post.id != postId)
-        return post
-      else
-      return {...post,likes: post.likes - 1}
-    })
-
-    setPosts(newPosts);
-  };
+const Posts = ({
+  userLikes,
+  userDisLikes,
+  addLikeClicked,
+  removeLikeClicked,
+  posts,
+  users,
+  sort,
+}: {
+  userLikes: Post[];
+  userDisLikes: Post[];
+  posts: Post[];
+  users: User[];
+  removeLikeClicked: (postId: string) => void;
+  addLikeClicked: (postId: string) => void;
+  sort: (objectKey: SortKey) => void;
+}) => {
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-      className="Posts"
-    >
-      {posts.map((post) => (
-        <PostComp key={post.id} post={post} addLike={addLike} removeLike={removeLike}></PostComp>
-      ))}
+    <div className="Posts">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: "5%",
+        }}
+      >
+        <BasicSelect sx={sortStyle} sort={sort}></BasicSelect>
+        {posts.map((post) => (
+          <Link
+            key={post.id}
+            to={`/PostDetailed/${post.id}`}
+            style={{ textDecoration: "none" }}
+          >
+            <PostComp
+              post={post}
+              userLikes={userLikes}
+              userDisLikes={userDisLikes}
+              addLikeClicked={addLikeClicked}
+              removeLikeClicked={removeLikeClicked}
+              users={users}
+            ></PostComp>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };

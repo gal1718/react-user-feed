@@ -5,23 +5,49 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Button from "../Button/Button";
+//import Button from "../Button/Button";
 import Typography from "@mui/material/Typography";
-import importedUsers from "../../data/users.json";
 import moment from "moment";
-import { type TPost } from '../../lib/types';
-//import ReactDOM from 'react-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
-//import { faSolid } from '@fortawesome/free-solid-svg-icons'
-import { faArrowUp } from '@fortawesome/free-solid-svg-icons'
-import { faArrowDown } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowUp,
+  faArrowDown,
+  faComment,
+} from "@fortawesome/free-solid-svg-icons";
+import { type Post, type User } from "../../utils/dataUtils";
 
-
-const Post = ({ post, addLike, removeLike }: { post: TPost; addLike: (postId: string)=> void; removeLike: (postId: string)=> void }) => {
+const PostComp = ({
+  post,
+  userLikes,
+  userDisLikes,
+  addLikeClicked,
+  removeLikeClicked,
+  users,
+}: {
+  post: Post;
+  userLikes: Post[];
+  userDisLikes: Post[];
+  addLikeClicked: (postId: string) => void;
+  removeLikeClicked: (postId: string) => void;
+  users: User[];
+}) => {
   let timePassed: undefined | string = moment(
     new Date(post.published_at)
   ).fromNow();
+
+  //need to change also the post whuchh is the selectedPost from post details
+  const handleLike = (event: React.MouseEvent) => {
+    console.log("stop progration");
+    addLikeClicked(post.id);
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  const handleDisLike = (event: React.MouseEvent) => {
+    removeLikeClicked(post.id);
+    event.preventDefault();
+    event.stopPropagation();
+  };
 
   // generics ( we arew also using generics in react hooks)
   // we write <T,> instead of <T> because its covert to js; ts gonna think were writing jsx element; <T,> prevent it. use older syntax to avoid it
@@ -40,9 +66,13 @@ const Post = ({ post, addLike, removeLike }: { post: TPost; addLike: (postId: st
 
   return (
     <div key={post.id} className="Post">
-  
       <Card
-        sx={{ width: 900, backgroundColor: "#343434", marginBottom: "5px" }}
+        sx={{
+          width: 900,
+          backgroundColor: "#101113",
+          marginBottom: "5px",
+          borderBottom: "1px solid gray",
+        }}
       >
         <CardContent>
           <div
@@ -53,13 +83,16 @@ const Post = ({ post, addLike, removeLike }: { post: TPost; addLike: (postId: st
               <div className="avatar">
                 <img
                   src={
-                    importedUsers.find((x) => x.id === post.user_id)?.avatar ??
+                    users.find((x) => x.id === post.user_id)?.avatar ??
                     "default-avatar-url"
                   }
                 ></img>
               </div>
             </div>
-            <div style={{ marginLeft: "2%" }}>• {timePassed}</div>
+            <div style={{ marginLeft: "1%", color: "lightskyblue" }}>
+              {users.find((x) => x.id === post.user_id)?.user_name}
+            </div>
+            <div style={{ marginLeft: "1%" }}>• {timePassed}</div>
           </div>
           <Typography
             gutterBottom
@@ -80,18 +113,44 @@ const Post = ({ post, addLike, removeLike }: { post: TPost; addLike: (postId: st
             <CardMedia
               component="img"
               alt={post.title}
-              sx={{ maxHeight: "700px", borderRadius: "4%", objectFit: "contain"}}
+              sx={{
+                maxHeight: "700px",
+                borderRadius: "4%",
+                objectFit: "contain",
+              }}
               image={post.imageUrl || undefined}
             />
           )}
         </CardContent>
         <CardActions>
-          <div style={{display:"flex",backgroundColor: "green",borderRadius: "10px"}}>
-          <FontAwesomeIcon onClick={() => addLike(post.id)} icon={faArrowUp}/>
-          <span>{post.likes || "Vote"}</span> 
-          <FontAwesomeIcon onClick={() => removeLike(post.id)} icon={faArrowDown}/>
+          <div className="action-container">
+            <FontAwesomeIcon
+              className={
+                userLikes.some((el) => el.id === post.id) ? "like icon" : "icon"
+              }
+              onClick={(event) => handleLike(event)}
+              icon={faArrowUp}
+            />
+            <span style={{ margin: "0px 5px 0px 5px" }}>
+              {post.likes || "Vote"}
+            </span>
+            <FontAwesomeIcon
+              className={
+                userDisLikes.some((el) => el.id === post.id)
+                  ? "dislike icon"
+                  : "icon"
+              }
+              onClick={(event: React.MouseEvent) => handleDisLike(event)}
+              icon={faArrowDown}
+            />
           </div>
-          <Button
+          <div className="action-container">
+            <FontAwesomeIcon className="icon" icon={faComment} />
+            <span style={{ margin: "0px 5px 0px 5px" }}>
+              {post.comments?.length || "Comment"}
+            </span>
+          </div>
+          {/* <Button
             type="button"
             autoFocus={true}
             style={{ backgroundColor: "green" }}
@@ -106,11 +165,11 @@ const Post = ({ post, addLike, removeLike }: { post: TPost; addLike: (postId: st
             onClick={() => alert("comment")}
           >
             Comment
-          </Button>
+          </Button> */}
         </CardActions>
       </Card>
     </div>
   );
 };
 
-export default Post;
+export default PostComp;

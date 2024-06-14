@@ -37,6 +37,8 @@ const CommentComp = ({
     new Date(comment.published_at)
   ).fromNow();
 
+  console.log("comment : " + JSON.stringify(comment));
+
   return (
     <div key={comment.id} className="Comment">
       <Card
@@ -72,7 +74,9 @@ const CommentComp = ({
             gutterBottom={true}
             color="text.secondary"
           >
+            <div>
             {parse(comment.body)}
+            </div>
           </Typography>
           {comment.imageUrl && (
             <CardMedia

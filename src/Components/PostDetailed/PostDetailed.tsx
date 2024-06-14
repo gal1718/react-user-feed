@@ -45,8 +45,8 @@ const PostDetailed = ({
   //const [userCommentText, setUserCommentText] = useState<string>("");
   const { postId } = useParams<{ postId: string }>();
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [value, setValue] = useState<string>("");
-  const [commentHtmlStr,setCommentHtml] = useState<string>("");
+  //const [value, setValue] = useState<string>("");
+  const [commentHtmlStr,setCommentHtmlStr] = useState<string>("");
 
   useEffect(() => {
     const post = posts.find((post) => post.id === postId);
@@ -63,7 +63,7 @@ const PostDetailed = ({
     // //const data = document.querySelector('.ck-content p')?.textContent;
     // const data = CKEditor.e;
     
-
+    console.log("commentHtmlStr " + commentHtmlStr)
     const newComment: Comment = {
       user_id: "87819d35-6a5f-4d49-ba0f-982c332ad36c",
       body: commentHtmlStr,
@@ -121,6 +121,7 @@ const PostDetailed = ({
                         console.log( "the event is: " + event);
                         const data = editor.getData();
                         console.log({event,editor,data});
+                        setCommentHtmlStr(data);
                     } }
                     onBlur={ ( editor ) => {
                         console.log( 'Blur.', editor );
@@ -134,7 +135,7 @@ const PostDetailed = ({
           <input
             placeholder="add a comment"
             type="text"
-            onChange={(el) => {setCommentHtml(el.target.value);console.log(ClassicEditor.Context)}}
+            onChange={(el) => {setCommentHtmlStr(el.target.value)}}
           ></input>
           <button onClick={() => handleCommentAddition()}>Comment</button>
           <Comments

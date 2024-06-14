@@ -5,6 +5,8 @@ import { type Post, type User, type SortKey } from "../../utils/dataUtils";
 import { Link } from "react-router-dom";
 import { SxProps } from "@mui/material/styles";
 
+//console.log("posts component ");
+
 const sortStyle: SxProps = {
   marginRight: "55%",
   '.MuiSelect-root': {
@@ -36,6 +38,9 @@ const Posts = ({
   addLikeClicked: (postId: string) => void;
   sort: (objectKey: SortKey) => void;
 }) => {
+
+  console.log("postas comp");
+
   return (
     <div className="Posts">
       <div

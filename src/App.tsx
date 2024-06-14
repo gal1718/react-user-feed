@@ -12,6 +12,7 @@ import {
   createRandomPost,
 } from "././utils/dataUtils";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { faker } from "@faker-js/faker";
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);
@@ -31,10 +32,27 @@ function App() {
   const [userDisLikes, setUserDisLikes] = useState<Post[]>([]);
   const [userCommentsLikes, setUserCommentsLikes] = useState<Comment[]>([]);
   const [userCommentsDisLikes, setUserCommentsDisLikes] = useState<Comment[]>([]);
+  
 
   useEffect(() => {
     const generatedUsers = Array.from({ length: 10 }, createRandomUser);
-    setUsers(generatedUsers);
+    
+    const birthday = faker.date.birthdate();
+    const avatar = faker.image.avatar();
+    //add user for testing:
+    const tstUser: User = {
+      id: "87819d35-6a5f-4d49-ba0f-982c332ad36c",
+      avatar,
+      birthday,
+      "email": "Gal.Stroman44@yahoo.com",
+      "firstName": "Gal",
+      "lastName": "Stroman",
+      "user_name": "Gal Stroman",
+      "sex": "male",
+  }
+  generatedUsers.push(tstUser);
+  setUsers(generatedUsers);
+
 
     // Generate posts for each user
     const generatedPosts = generatedUsers.flatMap((user) =>
@@ -42,6 +60,8 @@ function App() {
     );
     setPosts(generatedPosts);
   }, []);
+
+  console.log("app comp");
 
   const addLikeClicked = (contentId: string) => {
     //3 cases
@@ -160,7 +180,7 @@ function App() {
             }
           />
           <Route
-            path="/PostDetailed/:contentId"
+            path="/PostDetailed/:postId"
             element={
               <PostDetailed
                 posts={posts}

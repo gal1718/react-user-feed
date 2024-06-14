@@ -48,6 +48,7 @@ const PostComp = ({
     event.preventDefault();
     event.stopPropagation();
   };
+  console.log("post Comp");
 
   // generics ( we arew also using generics in react hooks)
   // we write <T,> instead of <T> because its covert to js; ts gonna think were writing jsx element; <T,> prevent it. use older syntax to avoid it

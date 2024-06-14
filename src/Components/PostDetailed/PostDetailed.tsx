@@ -5,6 +5,12 @@ import { useParams } from "react-router-dom";
 import { type Post, type User, type Comment } from "../../utils/dataUtils";
 import Comments from "../Comments/comments";
 import PostComp from "../Post/Post";
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+//import Image from '@ckeditor/ckeditor5-image/src/image';
+import './PostDetailed.css';
+
+
 //import MDEditor, { ContextStore } from "@uiw/react-md-editor";
 
 
@@ -40,6 +46,7 @@ const PostDetailed = ({
   const { postId } = useParams<{ postId: string }>();
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [value, setValue] = useState<string>("");
+  const [commentHtmlStr,setCommentHtml] = useState<string>("");
 
   useEffect(() => {
     const post = posts.find((post) => post.id === postId);
@@ -49,14 +56,19 @@ const PostDetailed = ({
   }, []);
 
   const handleCommentAddition = () => {
+    
     if (!selectedPost) return;
     //set the posts with the new comment in the selected post
-    //debugger;
+    ////debugger;
+    // //const data = document.querySelector('.ck-content p')?.textContent;
+    // const data = CKEditor.e;
+    
+
     const newComment: Comment = {
-      user_id: "123",
-      body: value,
+      user_id: "87819d35-6a5f-4d49-ba0f-982c332ad36c",
+      body: commentHtmlStr,
       comments: undefined,
-      id: "",
+      id: "123456",
       published_at: Date.now().toString(),
       likes: 0,
     };
@@ -89,7 +101,6 @@ const PostDetailed = ({
       key={selectedPost!.id}
       className="PostDetailed"
     >
-      <div>
         <PostComp
           userLikes={userLikes}
           userDisLikes={userDisLikes}
@@ -98,11 +109,32 @@ const PostDetailed = ({
           addLikeClicked={addLikeClicked}
           users={users}
         ></PostComp>
-        <div>
+
+<CKEditor
+                    editor={ ClassicEditor }
+                    data="<p>Hello from CKEditor&nbsp;5!</p>"
+                    onReady={ editor => {
+                        // You can store the "editor" and use when it is needed.
+                        console.log( 'Editor is ready to use!', editor );
+                    } }
+                    onChange={ (event,editor) => {
+                        console.log( "the event is: " + event);
+                        const data = editor.getData();
+                        console.log({event,editor,data});
+                    } }
+                    onBlur={ ( editor ) => {
+                        console.log( 'Blur.', editor );
+                    } }
+                    onFocus={ ( editor ) => {
+                        console.log( 'Focus.', editor );
+                    } }
+                />
+
+               
           <input
             placeholder="add a comment"
             type="text"
-            onChange={(el) => setValue(el.target.value)}
+            onChange={(el) => {setCommentHtml(el.target.value);console.log(ClassicEditor.Context)}}
           ></input>
           <button onClick={() => handleCommentAddition()}>Comment</button>
           <Comments
@@ -115,8 +147,7 @@ const PostDetailed = ({
             setUserCommentsDisLikes = {setUserCommentsDisLikes}
   
           ></Comments>
-        </div>
-      </div>
+      
     </div>
   );
 };

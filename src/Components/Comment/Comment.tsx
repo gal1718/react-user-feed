@@ -14,6 +14,7 @@ import {
   faComment,
 } from "@fortawesome/free-solid-svg-icons";
 import { type Post, type Comment, type User } from "../../utils/dataUtils";
+import parse from 'html-react-parser';
 
 const CommentComp = ({
   post,
@@ -38,9 +39,6 @@ const CommentComp = ({
 
   return (
     <div key={comment.id} className="Comment">
-      {post.id}
-      {comment.body}
-      {users[0].email}
       <Card
         sx={{
           width: 900,
@@ -58,42 +56,34 @@ const CommentComp = ({
               <div className="avatar">
                 <img
                   src={
-                    users.find((x) => x.id === post.user_id)?.avatar ??
+                    users.find((x) => x.id === comment.user_id)?.avatar ??
                     "default-avatar-url"
                   }
                 ></img>
               </div>
             </div>
             <div style={{ marginLeft: "1%", color: "lightskyblue" }}>
-              {users.find((x) => x.id === post.user_id)?.user_name}
+              {users.find((x) => x.id === comment.user_id)?.user_name}
             </div>
             <div style={{ marginLeft: "1%" }}>• {timePassed}</div>
           </div>
-          <Typography
-            gutterBottom
-            variant="h5"
-            component="div"
-            sx={{ marginTop: "5px" }}
-          >
-            {post.title}
-          </Typography>
           <Typography
             variant="body2"
             gutterBottom={true}
             color="text.secondary"
           >
-            {post.body}
+            {parse(comment.body)}
           </Typography>
-          {post.imageUrl && (
+          {comment.imageUrl && (
             <CardMedia
               component="img"
-              alt={post.title}
+              alt="comment"
               sx={{
                 maxHeight: "700px",
                 borderRadius: "4%",
                 objectFit: "contain",
               }}
-              image={post.imageUrl || undefined}
+              image={comment.imageUrl || undefined}
             />
           )}
         </CardContent>
@@ -101,9 +91,9 @@ const CommentComp = ({
           <div className="action-container">
             <FontAwesomeIcon
               className={
-                userCommentsLikes.some((el) => el.id === post.id) ? "like icon" : "icon"
+                userCommentsLikes.some((el) => el.id === comment.id) ? "like icon" : "icon"
               }
-              onClick={(event) => handleLike(event)}
+              onClick={() => console.log("handle click")}
               icon={faArrowUp}
             />
             <span style={{ margin: "0px 5px 0px 5px" }}>
@@ -115,14 +105,14 @@ const CommentComp = ({
                   ? "dislike icon"
                   : "icon"
               }
-              onClick={(event: React.MouseEvent) => handleDisLike(event)}
+              onClick={(event: React.MouseEvent) => console.log("dsd")}
               icon={faArrowDown}
             />
           </div>
           <div className="action-container">
             <FontAwesomeIcon className="icon" icon={faComment} />
             <span style={{ margin: "0px 5px 0px 5px" }}>
-              {post.comments?.length || "Comment"}
+              {comment.comments?.length || "Comment"}
             </span>
           </div>
         </CardActions>

@@ -4,7 +4,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { type SortKey } from "../../utils/dataUtils";
+import { type SortKey } from "../../utils/typeAndData";
 import { SxProps } from "@mui/material/styles";
 
 const sortKeys: SortKey[] = ["published_at", "likes"];

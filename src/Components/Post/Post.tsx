@@ -10,60 +10,59 @@ import Typography from "@mui/material/Typography";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowUp,
-  faArrowDown,
   faComment,
 } from "@fortawesome/free-solid-svg-icons";
-import { type Post, type User } from "../../utils/dataUtils";
+import { type Post, type User } from "../../utils/typeAndData";
+import { likeClicked, dislikeClicked } from "../../utils/likedislikeFunc";
+import LikeDisLike from "../LikeDisLike/LikeDisLike";
 
 const PostComp = ({
   post,
-  userLikes,
-  userDisLikes,
-  addLikeClicked,
-  removeLikeClicked,
+  posts,
+  handleSetPosts,
   users,
+  user,
 }: {
   post: Post;
-  userLikes: Post[];
-  userDisLikes: Post[];
-  addLikeClicked: (postId: string) => void;
-  removeLikeClicked: (postId: string) => void;
+  posts: Post[];
+  handleSetPosts: (newPosts: Post[]) => void;
   users: User[];
+  user: User;
 }) => {
+  console.log("post Comp render");
   let timePassed: undefined | string = moment(
     new Date(post.published_at)
   ).fromNow();
 
   //need to change also the post whuchh is the selectedPost from post details
   const handleLike = (event: React.MouseEvent) => {
-    console.log("stop progration");
-    addLikeClicked(post.id);
+    //console.log("stop progration");
+    const newPost = likeClicked(post,user);
+    const newPosts = posts.map((postItem) =>{
+      if(postItem.id !== post.id){
+        return postItem
+      }
+      return newPost;
+    })
+    handleSetPosts(newPosts as Post[]);
+    //prevent opening the post
     event.preventDefault();
     event.stopPropagation();
   };
 
   const handleDisLike = (event: React.MouseEvent) => {
-    removeLikeClicked(post.id);
+    //removeLikeClicked(post.id);
+    const newPost = dislikeClicked(post,user);
+    const newPosts = posts.map((postItem) =>{
+      if(postItem.id !== post.id){
+        return postItem
+      }
+      return newPost;
+    })
+    handleSetPosts(newPosts as Post[])//////*** */
     event.preventDefault();
     event.stopPropagation();
   };
-  console.log("post Comp");
-
-  // generics ( we arew also using generics in react hooks)
-  // we write <T,> instead of <T> because its covert to js; ts gonna think were writing jsx element; <T,> prevent it. use older syntax to avoid it
-  // In generic functions ( that recieve and return something) we are specifinig a relationship betweeen the func args and the return value- both should be from the same type T
-  // const buildTypeDynamicArr = <T,>(value: T): T[] => {
-
-  //   return [value];
-  // }
-  //functions old syntax for more readable generic function
-  // function buildTypeDynamicArr<T>(value: T): T[] {
-  //   return [value];
-  // }
-
-  // console.log(buildTypeDynamicArr("hellol worlds"));
-  // console.log(buildTypeDynamicArr(5));
 
   return (
     <div key={post.id} className="Post">
@@ -124,49 +123,18 @@ const PostComp = ({
           )}
         </CardContent>
         <CardActions>
-          <div className="action-container">
-            <FontAwesomeIcon
-              className={
-                userLikes.some((el) => el.id === post.id) ? "like icon" : "icon"
-              }
-              onClick={(event) => handleLike(event)}
-              icon={faArrowUp}
-            />
-            <span style={{ margin: "0px 5px 0px 5px" }}>
-              {post.likes || "Vote"}
-            </span>
-            <FontAwesomeIcon
-              className={
-                userDisLikes.some((el) => el.id === post.id)
-                  ? "dislike icon"
-                  : "icon"
-              }
-              onClick={(event: React.MouseEvent) => handleDisLike(event)}
-              icon={faArrowDown}
-            />
-          </div>
+          <LikeDisLike
+            user={user}
+            item={post}
+            onLike={handleLike}
+            onDisLike={handleDisLike}
+          ></LikeDisLike>
           <div className="action-container">
             <FontAwesomeIcon className="icon" icon={faComment} />
             <span style={{ margin: "0px 5px 0px 5px" }}>
               {post.comments?.length || "Comment"}
             </span>
           </div>
-          {/* <Button
-            type="button"
-            autoFocus={true}
-            style={{ backgroundColor: "green" }}
-            onClick={() => addLike(post.id)}
-          >
-            Like
-          </Button>
-          <Button
-            type="button"
-            autoFocus={false}
-            style={{ backgroundColor: "red" }}
-            onClick={() => alert("comment")}
-          >
-            Comment
-          </Button> */}
         </CardActions>
       </Card>
     </div>

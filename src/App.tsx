@@ -4,160 +4,70 @@ import Posts from "./Components/Posts/Posts";
 import PostDetailed from "./Components/PostDetailed/PostDetailed";
 import AppBarComp from "./Components/AppBar/AppBar";
 import {
-  type Post,
-  type User,
-  type SortKey,
-  type Comment,
+  Post,
+  User,
   createRandomUser,
   createRandomPost,
-} from "././utils/dataUtils";
+} from "./utils/typeAndData";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { faker } from "@faker-js/faker";
 
-function App() {
+const App = () => {
+  console.log("App component render");
+
+  const initialUser = {
+    id: "87819d35-6a5f-4d49-ba0f-982c332ad36c",
+    avatar: faker.image.avatar(),
+    birthday: faker.date.birthdate(),
+    email: "Gal.Stroman44@yahoo.com",
+    firstName: "Gal",
+    lastName: "Stroman",
+    user_name: "Gal Stroman",
+    sex: "male",
+  };
+
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedPost, setSelectedPost] = useState<Post>({
-    id: "0",
-    user_id: "0",
-    title: "0",
-    body: "0",
-    published_at: "0",
-    imageUrl: "0",
-    likes: 0,
-    comments: undefined,
-  }); //change to post | null
 
-  const [userLikes, setUserLikes] = useState<Post[]>([]);
-  const [userDisLikes, setUserDisLikes] = useState<Post[]>([]);
-  const [userCommentsLikes, setUserCommentsLikes] = useState<Comment[]>([]);
-  const [userCommentsDisLikes, setUserCommentsDisLikes] = useState<Comment[]>([]);
-  
+  // const {
+  //   content: posts,
+  //   likeClicked,
+  //   dislikeClicked,
+  //   setContent: setPosts,
+  // } = useContentInteractions<Post>([], initialUser, "posts");
 
   useEffect(() => {
-    const generatedUsers = Array.from({ length: 10 }, createRandomUser);
-    
-    const birthday = faker.date.birthdate();
-    const avatar = faker.image.avatar();
-    //add user for testing:
-    const tstUser: User = {
-      id: "87819d35-6a5f-4d49-ba0f-982c332ad36c",
-      avatar,
-      birthday,
-      "email": "Gal.Stroman44@yahoo.com",
-      "firstName": "Gal",
-      "lastName": "Stroman",
-      "user_name": "Gal Stroman",
-      "sex": "male",
-  }
-  generatedUsers.push(tstUser);
-  setUsers(generatedUsers);
+    const storedUsers = localStorage.getItem("users");
+    const storedPosts = localStorage.getItem("posts");
 
+    if (storedUsers && storedPosts) {
+      setUsers(JSON.parse(storedUsers));
+      const sortedPosts = JSON.parse(storedPosts).sort((a: Post, b: Post) =>
+        (a.published_at || 0) < (b.published_at || 0) ? 1 : -1
+      );
+      setPosts(sortedPosts);
+    } else {
+      const generatedUsers = Array.from({ length: 10 }, createRandomUser);
+      generatedUsers.push(initialUser);
+      setUsers(generatedUsers);
+      localStorage.setItem("users", JSON.stringify(generatedUsers));
 
-    // Generate posts for each user
-    const generatedPosts = generatedUsers.flatMap((user) =>
-      Array.from({ length: 5 }, () => createRandomPost(user.id))
-    );
-    setPosts(generatedPosts);
+      const generatedPosts = generatedUsers.flatMap((user) =>
+        Array.from({ length: 5 }, () => createRandomPost(user.id))
+      );
+      const sortedPosts = generatedPosts.sort((a, b) =>
+        (a.published_at || 0) < (b.published_at || 0) ? 1 : -1
+      );
+      console.log("sortedPosts: " + JSON.stringify(sortedPosts));
+
+      setPosts(sortedPosts);
+      localStorage.setItem("posts", JSON.stringify(sortedPosts));
+    }
   }, []);
 
-  console.log("app comp");
-
-  const addLikeClicked = (contentId: string) => {
-    //3 cases
-    //userLikes- 0, userDislikes - 0
-    if (!userLikedPostBefore(contentId) && !userDisLikedPostBefore(contentId)) {
-      addUserLike(contentId);
-      changePostLikes(1, contentId);
-    }
-    //userLikes- 0, userDislikes - 1
-    else if (!userLikedPostBefore(contentId) && userDisLikedPostBefore(contentId)) {
-      addUserLike(contentId);
-      removeUserDisLike(contentId);
-      changePostLikes(2, contentId);
-    }
-    //userLikes- 1, userDislikes - 0
-    else {
-      removeUserLike(contentId);
-      changePostLikes(-1, contentId);
-    }
-  };
-
-  const removeLikeClicked = (contentId: string) => {
-    //3 cases
-    //userLikes- 0, userDislikes - 0
-    if (!userLikedPostBefore(contentId) && !userDisLikedPostBefore(contentId)) {
-      addUserDisLike(contentId);
-      changePostLikes(-1, contentId);
-    }
-    //userLikes- 0, userDislikes - 1
-    else if (!userLikedPostBefore(contentId) && userDisLikedPostBefore(contentId)) {
-      //console.log("userLikes- 0, userDislikes - 1");
-      removeUserDisLike(contentId);
-      changePostLikes(1, contentId);
-    }
-    //userLikes- 1, userDislikes - 0
-    else {
-      removeUserLike(contentId);
-      addUserDisLike(contentId);
-      changePostLikes(-2, contentId);
-    }
-  };
-
-  const removeUserLike = (contentId: string) => {
-    const newUserLikes = userLikes.filter((userLike) => userLike.id != contentId);
-    setUserLikes(newUserLikes);
-  };
-
-  const addUserLike = (contentId: string) => {
-    posts.forEach((post) => {
-      if (post.id === contentId) {
-        setUserLikes([...userLikes, post]); // adding the post to the user's likes
-      }
-    });
-  };
-
-  const removeUserDisLike = (contentId: string) => {
-    const newUserDisLikes = userDisLikes.filter(
-      (userDisLike) => userDisLike.id != contentId
-    );
-    setUserDisLikes(newUserDisLikes);
-  };
-
-  const addUserDisLike = (contentId: string) => {
-    posts.forEach((post) => {
-      if (post.id === contentId) {
-        setUserDisLikes([...userDisLikes, post]); // adding the post to the user's Dislikes
-      }
-    });
-  };
-
-  const changePostLikes = (likes: number, contentId: string) => {
-    let newNumberLikes = 0;
-    const newPosts = posts.map((post) => {
-      if (post.id != contentId) return post;
-      else {
-        newNumberLikes = post.likes + likes;
-        return { ...post, likes: post.likes + likes };
-      }
-    });
+  const handleSetPosts = (newPosts: Post[]) => {
+    localStorage.setItem("posts", JSON.stringify(newPosts));
     setPosts(newPosts);
-    setSelectedPost({ ...selectedPost, likes: newNumberLikes });
-  };
-
-  const userLikedPostBefore = (contentId: string) => {
-    return userLikes.some((LikEl) => LikEl.id === contentId);
-  };
-
-  const userDisLikedPostBefore = (contentId: string) => {
-    return userDisLikes.some((LikEl) => LikEl.id === contentId);
-  };
-
-  const sort = (objectKey: SortKey) => {
-    const sortedList = [...posts].sort((a, b) =>
-      (a[objectKey] || 0) < (b[objectKey] || 0) ? 1 : -1
-    );
-    setPosts(sortedList);
   };
 
   return (
@@ -169,13 +79,10 @@ function App() {
             path="/"
             element={
               <Posts
-                userLikes={userLikes}
-                userDisLikes={userDisLikes}
                 posts={posts}
+                handleSetPosts={handleSetPosts}
                 users={users}
-                addLikeClicked={addLikeClicked}
-                removeLikeClicked={removeLikeClicked}
-                sort={sort}
+                user={initialUser}
               />
             }
           />
@@ -184,18 +91,9 @@ function App() {
             element={
               <PostDetailed
                 posts={posts}
-                setPosts={setPosts}
-                setUserDisLikes={setUserDisLikes}
-                userDisLikes={userDisLikes}
-                userLikes={userLikes}
-                selectedPost={selectedPost}
+                handleSetPosts={handleSetPosts}
                 users={users}
-                addLikeClicked={addLikeClicked}
-                removeLikeClicked={removeLikeClicked}
-                userCommentsLikes = {userCommentsLikes}
-                setUserCommentsLikes = {setUserCommentsLikes}
-                userCommentsDisLikes = {userCommentsDisLikes}
-                setUserCommentsDisLikes = {setUserCommentsDisLikes}
+                user={initialUser}
               />
             }
           />
@@ -203,6 +101,6 @@ function App() {
       </Router>
     </div>
   );
-}
+};
 
 export default App;

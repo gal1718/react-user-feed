@@ -1,94 +1,69 @@
 //import React from "react";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { type Post, type User, type Comment } from "../../utils/dataUtils";
+import { useLocation, useParams } from "react-router-dom";
+import { type Post, type User, type Comment } from "../../utils/typeAndData";
 import Comments from "../Comments/comments";
 import PostComp from "../Post/Post";
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 //import Image from '@ckeditor/ckeditor5-image/src/image';
-import './PostDetailed.css';
-
+import "./PostDetailed.css";
+import { faker } from "@faker-js/faker";
+import useContentInteractions from "../../hooks/ContentWithInteractions";
 
 //import MDEditor, { ContextStore } from "@uiw/react-md-editor";
 
-
 const PostDetailed = ({
   posts,
-  setPosts,
-  userDisLikes,
-  userLikes,
-  addLikeClicked,
-  removeLikeClicked,
+  handleSetPosts,
   users,
-  setUserCommentsLikes,
-  setUserCommentsDisLikes,
-  userCommentsLikes,
-  userCommentsDisLikes
-
+  user,
 }: {
-  setUserCommentsLikes: React.Dispatch<React.SetStateAction<Comment[]>>,
-  setUserCommentsDisLikes: React.Dispatch<React.SetStateAction<Comment[]>>,
-  userCommentsLikes: Comment[],
-  userCommentsDisLikes: Comment[],
   posts: Post[];
-  setUserDisLikes: React.Dispatch<React.SetStateAction<Post[]>>;
-  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
-  userLikes: Post[];
-  userDisLikes: Post[];
-  selectedPost: Post;
-  removeLikeClicked: (postId: string) => void;
+  handleSetPosts: (newPosts: Post[]) => void;
   users: User[];
-  addLikeClicked: (postId: string) => void;
+  user: User;
 }) => {
-  //const [userCommentText, setUserCommentText] = useState<string>("");
+  console.log("postDetails Comp render");
   const { postId } = useParams<{ postId: string }>();
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  //const [value, setValue] = useState<string>("");
-  const [commentHtmlStr,setCommentHtmlStr] = useState<string>("");
+  const [commentHtmlStr, setCommentHtmlStr] = useState<string>("");
+  const location = useLocation();
+  const { post } = location.state;
+  const [editPost, setEditPost] = useState<Post>(post);
+  
 
-  useEffect(() => {
-    const post = posts.find((post) => post.id === postId);
-    if (post) {
-      setSelectedPost(post);
-    }
-  }, []);
+  const {
+    content: comments,
+    likeClicked: commentLikeClicked,
+    dislikeClicked: commentDislikeClicked,
+  } = useContentInteractions(post?.comments || [], user,"comments");
 
   const handleCommentAddition = () => {
-    
-    if (!selectedPost) return;
-    //set the posts with the new comment in the selected post
-    ////debugger;
-    // //const data = document.querySelector('.ck-content p')?.textContent;
-    // const data = CKEditor.e;
-    
-    console.log("commentHtmlStr " + commentHtmlStr)
+    if (!post) return;
+
     const newComment: Comment = {
-      user_id: "87819d35-6a5f-4d49-ba0f-982c332ad36c",
+      user_id: user.id,
       body: commentHtmlStr,
       comments: undefined,
-      id: "123456",
+      id: faker.string.uuid(),
       published_at: Date.now().toString(),
-      likes: 0,
     };
-    const newPosts = posts.map((post) => {
-      if (post.id != selectedPost!.id) return post;
-      else {
-        const updatedComments = [...(post.comments ?? []), newComment];
-        const newPost = { ...post, comments: updatedComments };
-        return newPost;
-      }
-    });
 
-    setSelectedPost({
-      ...selectedPost!,
-      comments: [...(selectedPost!.comments ?? []), newComment],
+    const updatedComments = [...(editPost.comments ?? []), newComment];
+    const newPost = { ...post, comments: updatedComments };
+    //console.log("new post is: " + JSON.stringify(newPost));
+    setEditPost(newPost);
+
+    const newPosts = posts.map((postItem) => {
+      if (postItem.id != post!.id) return postItem;
+      else return newPost;
     });
-    setPosts(newPosts);
+    //console.log("newPosts: " + JSON.stringify(newPosts));
+    handleSetPosts(newPosts);
   };
 
-  if (!selectedPost) return <div>Loading...</div>;
+  if (!post) return <div>Loading...</div>;
 
   return (
     <div
@@ -98,57 +73,48 @@ const PostDetailed = ({
         alignItems: "center",
         padding: "15px",
       }}
-      key={selectedPost!.id}
+      key={post!.id}
       className="PostDetailed"
     >
-        <PostComp
-          userLikes={userLikes}
-          userDisLikes={userDisLikes}
-          post={selectedPost!}
-          removeLikeClicked={removeLikeClicked}
-          addLikeClicked={addLikeClicked}
-          users={users}
-        ></PostComp>
+      <PostComp
+        post={post!}
+        posts={posts}
+        user={user}
+        users={users}
+        handleSetPosts={handleSetPosts}
+      ></PostComp>
 
-<CKEditor
-                    editor={ ClassicEditor }
-                    data="<p>Hello from CKEditor&nbsp;5!</p>"
-                    onReady={ editor => {
-                        // You can store the "editor" and use when it is needed.
-                        console.log( 'Editor is ready to use!', editor );
-                    } }
-                    onChange={ (event,editor) => {
-                        console.log( "the event is: " + event);
-                        const data = editor.getData();
-                        console.log({event,editor,data});
-                        setCommentHtmlStr(data);
-                    } }
-                    onBlur={ ( editor ) => {
-                        console.log( 'Blur.', editor );
-                    } }
-                    onFocus={ ( editor ) => {
-                        console.log( 'Focus.', editor );
-                    } }
-                />
+      <CKEditor
+        editor={ClassicEditor}
+        data="<p>Hello from CKEditor&nbsp;5!</p>"
+        onReady={(editor) => {
+          // You can store the "editor" and use when it is needed.
+          //console.log( 'Editor is ready to use!', editor );
+        }}
+        onChange={(event, editor) => {
+          //console.log( "the event is: " + event);
+          const data = editor.getData();
+          console.log({ event, editor, data });
+          setCommentHtmlStr(data);
+        }}
+        onBlur={(editor) => {
+          //console.log( 'Blur.', editor );
+        }}
+        onFocus={(editor) => {
+          //console.log( 'Focus.', editor );
+        }}
+      />
 
-               
-          <input
-            placeholder="add a comment"
-            type="text"
-            onChange={(el) => {setCommentHtmlStr(el.target.value)}}
-          ></input>
-          <button onClick={() => handleCommentAddition()}>Comment</button>
-          <Comments
-            post={selectedPost}
-            comments={selectedPost!.comments}
-            users={users}
-            userCommentsLikes={userCommentsLikes}
-            userCommentsDisLikes={userCommentsDisLikes}
-            setUserCommentsLikes={setUserCommentsLikes}
-            setUserCommentsDisLikes = {setUserCommentsDisLikes}
-  
-          ></Comments>
-      
+      <button onClick={() => handleCommentAddition()}>Comment</button>
+      {editPost.comments && (
+        <Comments
+          post={editPost}
+          posts={posts}
+          user={user}
+          comments={comments}
+          handleSetPosts={handleSetPosts}
+        ></Comments>
+      )}
     </div>
   );
 };

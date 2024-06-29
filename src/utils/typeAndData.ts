@@ -17,19 +17,21 @@ export type User = {
 };
 
 // Base type for shared properties
-export type Comment = {
+export type BaseContent = {
   id: string;
   user_id: string;
   body: string;
   published_at: string;
   imageUrl?: string;
-  likes: number;
-  comments?: Comment[] | undefined;
+  likes?: User[];
+  disLikes?: User[];
+  comments?: Comment[];
 };
 
-
-// Post type extending from BaseContent and adding a unique property
-export type Post = Comment & {
+// Comment type extending from BaseContent and adding a unique property
+export type Comment = BaseContent;
+// Post type extending from BaseContent and adding unique properties
+export type Post = BaseContent & {
   title: string;
 };
 
@@ -37,10 +39,7 @@ export function createRandomUser(): User {
   const sex = faker.person.sexType();
   const firstName = faker.person.firstName(sex);
   const lastName = faker.person.lastName();
-  const email = faker.helpers.unique(faker.internet.email, [
-    firstName,
-    lastName,
-  ]);
+  const email = faker.internet.email({ firstName, lastName });
   const user_name = firstName + " " + lastName;
 
   return {
@@ -63,8 +62,6 @@ export function createRandomPost(user_id: string): Post {
     body: faker.lorem.paragraphs(3),
     published_at: faker.date.past().toISOString(),
     imageUrl: faker.image.url(),
-    likes: faker.datatype.number({ min: 0, max: 100 }),
     comments: undefined,
   };
 }
-

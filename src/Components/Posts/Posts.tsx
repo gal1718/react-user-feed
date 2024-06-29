@@ -1,45 +1,43 @@
 import React from "react";
 import PostComp from "../Post/Post";
 import BasicSelect from "../BasicSelect/BasicSelect";
-import { type Post, type User, type SortKey } from "../../utils/dataUtils";
+import { type Post, type User, type SortKey } from "../../utils/typeAndData";
 import { Link } from "react-router-dom";
 import { SxProps } from "@mui/material/styles";
 
-//console.log("posts component ");
-
 const sortStyle: SxProps = {
   marginRight: "55%",
-  '.MuiSelect-root': {
-    fontSize: '0.8rem',
-    height: '30px',
-    width: '120px',
-    color: 'blue'
+  ".MuiSelect-root": {
+    fontSize: "0.8rem",
+    height: "30px",
+    width: "120px",
+    color: "blue",
   },
-  '.MuiMenuItem-root': {
-    fontSize: '0.8rem',
-    color: 'blue'
-  }
+  ".MuiMenuItem-root": {
+    fontSize: "0.8rem",
+    color: "blue",
+  },
 };
 
 const Posts = ({
-  userLikes,
-  userDisLikes,
-  addLikeClicked,
-  removeLikeClicked,
+  handleSetPosts,
   posts,
   users,
-  sort,
+  user,
 }: {
-  userLikes: Post[];
-  userDisLikes: Post[];
   posts: Post[];
   users: User[];
-  removeLikeClicked: (postId: string) => void;
-  addLikeClicked: (postId: string) => void;
-  sort: (objectKey: SortKey) => void;
+  user: User;
+  handleSetPosts: (newPosts: Post[]) => void;
 }) => {
+  console.log("POSTS comp render");
 
-  console.log("postas comp");
+  const sort = (objectKey: SortKey) => {
+    const sortedList = [...posts].sort((a, b) =>
+      (a[objectKey] || 0) < (b[objectKey] || 0) ? 1 : -1
+    );
+    handleSetPosts(sortedList);
+  };
 
   return (
     <div className="Posts">
@@ -56,15 +54,15 @@ const Posts = ({
           <Link
             key={post.id}
             to={`/PostDetailed/${post.id}`}
+            state={{ post }}
             style={{ textDecoration: "none" }}
           >
             <PostComp
               post={post}
-              userLikes={userLikes}
-              userDisLikes={userDisLikes}
-              addLikeClicked={addLikeClicked}
-              removeLikeClicked={removeLikeClicked}
+              user={user}
+              posts={posts}
               users={users}
+              handleSetPosts={handleSetPosts}
             ></PostComp>
           </Link>
         ))}

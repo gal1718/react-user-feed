@@ -2,7 +2,7 @@ import React from "react";
 //import BasicSelect from "../BasicSelect/BasicSelect";
 import { Link } from "react-router-dom";
 import { SxProps } from "@mui/material/styles";
-import { type Post, type Comment , type User } from "../../utils/dataUtils";
+import { type Post, type Comment, type User } from "../../utils/typeAndData";
 import CommentComp from "../Comment/Comment";
 
 const sortStyle: SxProps = {
@@ -19,10 +19,23 @@ const sortStyle: SxProps = {
   },
 };
 
-const Comments = ({ setUserCommentsLikes, setUserCommentsDisLikes,userCommentsLikes, userCommentsDisLikes, post, comments, users }: { setUserCommentsLikes: React.Dispatch<React.SetStateAction<Comment[]>>,
-    setUserCommentsDisLikes: React.Dispatch<React.SetStateAction<Comment[]>>,
-    userCommentsLikes: Comment[],
-    userCommentsDisLikes: Comment[],post: Post; comments: Comment[] | undefined, users: User[]}) => {
+const Comments = ({
+  post,
+  posts,
+  comments,
+  user,
+  handleSetPosts
+}: {
+  post: Post;
+  posts: Post[];
+  comments: Comment[];
+  user: User;
+  handleSetPosts: (newPosts: Post[]) => void;
+}) => {
+  
+  console.log(
+    "comments comp render. comments are: " + JSON.stringify(comments)
+  );
   return (
     <div className="Posts">
       <div
@@ -34,7 +47,14 @@ const Comments = ({ setUserCommentsLikes, setUserCommentsDisLikes,userCommentsLi
         }}
       >
         {comments?.map((comment, index) => (
-          <CommentComp key={index} post={post} comment={comment} users={users} userCommentsLikes={userCommentsLikes} userCommentsDisLikes={userCommentsDisLikes} setUserCommentsLikes={setUserCommentsLikes} setUserCommentsDisLikes={setUserCommentsDisLikes}></CommentComp>
+          <CommentComp
+            posts={posts}
+            key={index}
+            post={post}
+            comment={comment}
+            user={user}
+            handleSetPosts={handleSetPosts}
+          ></CommentComp>
         ))}
       </div>
     </div>

@@ -26,15 +26,17 @@ const CommentComp = ({
   mode,
   totalLikes,
   comment,
-  user,
+  LoggedUser,
+  users,
   handleSetPosts
 }: {
   mode: Mode;
   totalLikes: Number;
   posts: Post[]
   post: Post;
+  users: User[];
   comment: Comment;
-  user: User;
+  LoggedUser: User;
   handleSetPosts: (newPosts: Post[]) => void
 }) => {
   let timePassed: undefined | string = moment(
@@ -47,7 +49,7 @@ const CommentComp = ({
   //need to change also the post whuchh is the selectedPost from post details
   const handleLike = (event: React.MouseEvent) => {
     //console.log("stop progration");
-    const newComment = likeClicked(comment,user);
+    const newComment = likeClicked(comment,LoggedUser);
     const newPostComments = post.comments?.map((postCommentItem) =>{
       if(postCommentItem.id !== comment.id){
         return postCommentItem
@@ -67,7 +69,7 @@ const CommentComp = ({
 
   const handleDisLike = (event: React.MouseEvent) => {
     //removeLikeClicked(post.id);
-   const newComment = dislikeClicked(comment,user);
+   const newComment = dislikeClicked(comment,LoggedUser);
     const newPostComments = post.comments?.map((postCommentItem) =>{
       if(postCommentItem.id !== comment.id){
         return postCommentItem
@@ -103,14 +105,14 @@ const CommentComp = ({
               <div className="avatar">
                 <img
                   src={
-                    user.avatar ??
+                    users.find((x) => x.id === post.user_id)?.avatar ??
                     "default-avatar-url"
                   }
                 ></img>
               </div>
             </div>
             <div style={{ marginLeft: "1%", color: "lightskyblue" }}>
-              {user.user_name}
+              {users.find((x) => x.id === post.user_id)?.user_name}
             </div>
             <div style={{ marginLeft: "1%" }}>• {timePassed}</div>
           </div>
@@ -136,10 +138,8 @@ const CommentComp = ({
         </CardContent>
         <CardActions>
         <LikeDisLike
-            user={user}
             mode={mode}
             totalLikes={totalLikes}
-            item={comment}
             onLike={handleLike}
             onDisLike={handleDisLike}
           ></LikeDisLike>

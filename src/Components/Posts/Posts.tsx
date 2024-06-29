@@ -23,11 +23,11 @@ const Posts = ({
   handleSetPosts,
   posts,
   users,
-  user,
+  LoggedUser,
 }: {
   posts: Post[];
   users: User[];
-  user: User;
+  LoggedUser: User;
   handleSetPosts: (newPosts: Post[]) => void;
 }) => {
   console.log("POSTS comp render");
@@ -59,7 +59,7 @@ const Posts = ({
           >
             <PostComp
               post={post}
-              user={user}
+              LoggedUser={LoggedUser}
               posts={posts}
               users={users}
               handleSetPosts={handleSetPosts}

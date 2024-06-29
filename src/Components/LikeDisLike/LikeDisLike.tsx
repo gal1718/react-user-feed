@@ -10,7 +10,7 @@ import { User, Post, Mode } from "../../utils/typeAndData";
 
 
 
-const LikeDisLike = ({mode,totalLikes, user,item, onDisLike, onLike } : {mode: Mode;totalLikes: Number; user: User; item: Post | Comment, onDisLike: (event: React.MouseEvent) => void, onLike: (event: React.MouseEvent) => void}) => {
+const LikeDisLike = ({mode,totalLikes, onDisLike, onLike } : {mode: Mode;totalLikes: Number; onDisLike: (event: React.MouseEvent) => void, onLike: (event: React.MouseEvent) => void}) => {
 
   return (
     <div className="LikeDisLike">

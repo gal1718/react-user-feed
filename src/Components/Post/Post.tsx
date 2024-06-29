@@ -22,25 +22,25 @@ const PostComp = ({
   posts,
   handleSetPosts,
   users,
-  user,
+  LoggedUser,
 }: {
   post: Post;
   posts: Post[];
   handleSetPosts: (newPosts: Post[]) => void;
   users: User[];
-  user: User;
+  LoggedUser: User;
 }) => {
   console.log("post Comp render");
   let timePassed: undefined | string = moment(
     new Date(post.published_at)
   ).fromNow();
-  const mode = GetUserInteractionMode(post, user);
+  const mode = GetUserInteractionMode(post, LoggedUser);
   const totalLikes = getTotalLikes(post);
 
   //need to change also the post whuchh is the selectedPost from post details
   const handleLike = (event: React.MouseEvent) => {
     //console.log("stop progration");
-    const newPost = likeClicked(post,user);
+    const newPost = likeClicked(post,LoggedUser);
     const newPosts = posts.map((postItem) =>{
       if(postItem.id !== post.id){
         return postItem
@@ -55,7 +55,7 @@ const PostComp = ({
 
   const handleDisLike = (event: React.MouseEvent) => {
     //removeLikeClicked(post.id);
-    const newPost = dislikeClicked(post,user);
+    const newPost = dislikeClicked(post,LoggedUser);
     const newPosts = posts.map((postItem) =>{
       if(postItem.id !== post.id){
         return postItem
@@ -86,14 +86,14 @@ const PostComp = ({
               <div className="avatar">
                 <img
                   src={
-                    user.avatar ??
+                    users.find((x) => x.id === post.user_id)?.avatar ??
                     "default-avatar-url"
                   }
                 ></img>
               </div>
             </div>
             <div style={{ marginLeft: "1%", color: "lightskyblue" }}>
-              {user.user_name}
+              {users.find((x) => x.id === post.user_id)?.user_name}
             </div>
             <div style={{ marginLeft: "1%" }}>• {timePassed}</div>
           </div>
@@ -127,10 +127,8 @@ const PostComp = ({
         </CardContent>
         <CardActions>
           <LikeDisLike
-            user={user}
             totalLikes={totalLikes}
             mode={mode}
-            item={post}
             onLike={handleLike}
             onDisLike={handleDisLike}
           ></LikeDisLike>

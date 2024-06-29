@@ -15,7 +15,7 @@ import { faker } from "@faker-js/faker";
 const App = () => {
   console.log("App component render");
 
-  const initialUser = {
+  const LoggedUser = {
     id: "87819d35-6a5f-4d49-ba0f-982c332ad36c",
     avatar: faker.image.avatar(),
     birthday: faker.date.birthdate(),
@@ -48,7 +48,8 @@ const App = () => {
       setPosts(sortedPosts);
     } else {
       const generatedUsers = Array.from({ length: 10 }, createRandomUser);
-      generatedUsers.push(initialUser);
+      generatedUsers.push(LoggedUser);
+      console.log("users: " + JSON.stringify(generatedUsers));
       setUsers(generatedUsers);
       localStorage.setItem("users", JSON.stringify(generatedUsers));
 
@@ -82,7 +83,7 @@ const App = () => {
                 posts={posts}
                 handleSetPosts={handleSetPosts}
                 users={users}
-                user={initialUser}
+                LoggedUser={LoggedUser}
               />
             }
           />
@@ -93,7 +94,7 @@ const App = () => {
                 posts={posts}
                 handleSetPosts={handleSetPosts}
                 users={users}
-                user={initialUser}
+                LoggedUser={LoggedUser}
               />
             }
           />

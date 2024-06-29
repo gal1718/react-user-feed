@@ -22,15 +22,17 @@ const sortStyle: SxProps = {
 
 const Comments = ({
   post,
+  users,
   posts,
   comments,
-  user,
+  LoggedUser,
   handleSetPosts
 }: {
   post: Post;
   posts: Post[];
+  users: User[];
   comments: Comment[];
-  user: User;
+  LoggedUser: User;
   handleSetPosts: (newPosts: Post[]) => void;
 }) => {
   
@@ -50,12 +52,13 @@ const Comments = ({
         {comments?.map((comment, index) => (
           <CommentComp
             posts={posts}
-            mode={GetUserInteractionMode(comment,user)}
+            mode={GetUserInteractionMode(comment,LoggedUser)}
             totalLikes={getTotalLikes(comment)}
             key={index}
             post={post}
             comment={comment}
-            user={user}
+            LoggedUser={LoggedUser}
+            users={users}
             handleSetPosts={handleSetPosts}
           ></CommentComp>
         ))}

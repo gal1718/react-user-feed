@@ -18,12 +18,12 @@ const PostDetailed = ({
   posts,
   handleSetPosts,
   users,
-  user,
+  LoggedUser,
 }: {
   posts: Post[];
   handleSetPosts: (newPosts: Post[]) => void;
   users: User[];
-  user: User;
+  LoggedUser: User;
 }) => {
   console.log("postDetails Comp render");
   const { postId } = useParams<{ postId: string }>();
@@ -37,13 +37,13 @@ const PostDetailed = ({
     content: comments,
     likeClicked: commentLikeClicked,
     dislikeClicked: commentDislikeClicked,
-  } = useContentInteractions(post?.comments || [], user,"comments");
+  } = useContentInteractions(post?.comments || [], LoggedUser,"comments");
 
   const handleCommentAddition = () => {
     if (!post) return;
 
     const newComment: Comment = {
-      user_id: user.id,
+      user_id: LoggedUser.id,
       body: commentHtmlStr,
       comments: undefined,
       id: faker.string.uuid(),
@@ -79,7 +79,7 @@ const PostDetailed = ({
       <PostComp
         post={post!}
         posts={posts}
-        user={user}
+        LoggedUser={LoggedUser}
         users={users}
         handleSetPosts={handleSetPosts}
       ></PostComp>
@@ -109,8 +109,9 @@ const PostDetailed = ({
       {editPost.comments && (
         <Comments
           post={editPost}
+          users={users}
           posts={posts}
-          user={user}
+          LoggedUser={LoggedUser}
           comments={comments}
           handleSetPosts={handleSetPosts}
         ></Comments>

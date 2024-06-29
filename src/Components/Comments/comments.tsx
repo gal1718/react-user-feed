@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { SxProps } from "@mui/material/styles";
 import { type Post, type Comment, type User } from "../../utils/typeAndData";
 import CommentComp from "../Comment/Comment";
+import { GetUserInteractionMode, getTotalLikes } from "../../utils/utilsFunctions";
 
 const sortStyle: SxProps = {
   marginRight: "55%",
@@ -49,6 +50,8 @@ const Comments = ({
         {comments?.map((comment, index) => (
           <CommentComp
             posts={posts}
+            mode={GetUserInteractionMode(comment,user)}
+            totalLikes={getTotalLikes(comment)}
             key={index}
             post={post}
             comment={comment}

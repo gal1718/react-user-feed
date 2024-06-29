@@ -13,8 +13,9 @@ import {
   faComment,
 } from "@fortawesome/free-solid-svg-icons";
 import { type Post, type User } from "../../utils/typeAndData";
-import { likeClicked, dislikeClicked } from "../../utils/likedislikeFunc";
+import { likeClicked, dislikeClicked, GetUserInteractionMode, getTotalLikes } from "../../utils/utilsFunctions";
 import LikeDisLike from "../LikeDisLike/LikeDisLike";
+
 
 const PostComp = ({
   post,
@@ -33,6 +34,8 @@ const PostComp = ({
   let timePassed: undefined | string = moment(
     new Date(post.published_at)
   ).fromNow();
+  const mode = GetUserInteractionMode(post, user);
+  const totalLikes = getTotalLikes(post);
 
   //need to change also the post whuchh is the selectedPost from post details
   const handleLike = (event: React.MouseEvent) => {
@@ -59,7 +62,7 @@ const PostComp = ({
       }
       return newPost;
     })
-    handleSetPosts(newPosts as Post[])//////*** */
+    handleSetPosts(newPosts as Post[])//////*** */issue
     event.preventDefault();
     event.stopPropagation();
   };
@@ -83,14 +86,14 @@ const PostComp = ({
               <div className="avatar">
                 <img
                   src={
-                    users.find((x) => x.id === post.user_id)?.avatar ??
+                    user.avatar ??
                     "default-avatar-url"
                   }
                 ></img>
               </div>
             </div>
             <div style={{ marginLeft: "1%", color: "lightskyblue" }}>
-              {users.find((x) => x.id === post.user_id)?.user_name}
+              {user.user_name}
             </div>
             <div style={{ marginLeft: "1%" }}>• {timePassed}</div>
           </div>
@@ -125,6 +128,8 @@ const PostComp = ({
         <CardActions>
           <LikeDisLike
             user={user}
+            totalLikes={totalLikes}
+            mode={mode}
             item={post}
             onLike={handleLike}
             onDisLike={handleDisLike}

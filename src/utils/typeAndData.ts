@@ -65,3 +65,5 @@ export function createRandomPost(user_id: string): Post {
     comments: undefined,
   };
 }
+
+export type Mode = "liked" | "disliked" | "none";

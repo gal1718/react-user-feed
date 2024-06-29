@@ -6,16 +6,17 @@ import {
   faArrowDown,
   faComment,
 } from "@fortawesome/free-solid-svg-icons";
-import { User, Post } from "../../utils/typeAndData";
+import { User, Post, Mode } from "../../utils/typeAndData";
 
-const LikeDisLike = ({user,item, onDisLike, onLike } : {user: User; item: Post | Comment, onDisLike: (event: React.MouseEvent) => void, onLike: (event: React.MouseEvent) => void}) => {
+
+
+const LikeDisLike = ({mode,totalLikes, user,item, onDisLike, onLike } : {mode: Mode;totalLikes: Number; user: User; item: Post | Comment, onDisLike: (event: React.MouseEvent) => void, onLike: (event: React.MouseEvent) => void}) => {
 
   return (
     <div className="LikeDisLike">
       <FontAwesomeIcon
         className={
-          Array.isArray(item?.likes) &&
-          item?.likes?.some((itemUserLike) => itemUserLike.id === user.id)
+          mode === 'liked'
             ? "like icon"
             : "icon"
         }
@@ -23,14 +24,11 @@ const LikeDisLike = ({user,item, onDisLike, onLike } : {user: User; item: Post |
         icon={faArrowUp}
       />
       <span style={{ margin: "0px 5px 0px 5px" }}>
-        {(item.likes?.length || 0) - (item.disLikes?.length || 0) || "Vote"}
+        { totalLikes.toString() || "Vote"}
       </span>
       <FontAwesomeIcon
         className={
-          Array.isArray(post?.disLikes) &&
-          item?.disLikes?.some(
-            (itemUserDisLike) => itemUserDisLike.id === user.id
-          )
+          mode === 'disliked'
             ? "dislike icon"
             : "icon"
         }

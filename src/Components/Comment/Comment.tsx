@@ -15,16 +15,22 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { type Post, type Comment, type User } from "../../utils/typeAndData";
 import parse from "html-react-parser";
-import { likeClicked, dislikeClicked } from "../../utils/likedislikeFunc";
+import { likeClicked, dislikeClicked } from "../../utils/utilsFunctions";
 import LikeDisLike from "../LikeDisLike/LikeDisLike";
+
+type Mode = "liked" | "disliked" | "none";
 
 const CommentComp = ({
   posts,
   post,
+  mode,
+  totalLikes,
   comment,
   user,
   handleSetPosts
 }: {
+  mode: Mode;
+  totalLikes: Number;
   posts: Post[]
   post: Post;
   comment: Comment;
@@ -34,6 +40,7 @@ const CommentComp = ({
   let timePassed: undefined | string = moment(
     new Date(comment.published_at)
   ).fromNow();
+
 
   console.log("comment : " + JSON.stringify(comment));
 
@@ -130,6 +137,8 @@ const CommentComp = ({
         <CardActions>
         <LikeDisLike
             user={user}
+            mode={mode}
+            totalLikes={totalLikes}
             item={comment}
             onLike={handleLike}
             onDisLike={handleDisLike}
@@ -142,6 +151,23 @@ const CommentComp = ({
           </div>
         </CardActions>
       </Card>
+
+          {/* Render nested comments recursively
+      {comment.comments && comment.comments?.length > 0 && (
+        <div className="nested-comments">
+          {comment.comments.map((nestedComment) => (
+            <CommentComp
+              key={nestedComment.id}
+              posts={posts}
+              post={post}
+              comment={nestedComment}
+              user={user}
+              handleSetPosts={handleSetPosts}
+            />
+          ))}
+        </div>
+      )} */}
+
     </div>
   );
 };

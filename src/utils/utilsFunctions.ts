@@ -1,8 +1,7 @@
-import { Post, User, Comment } from "../utils/typeAndData";
+import { Post, User, Comment, Mode } from "./typeAndData";
 
 
-
-export const likeClicked = (item: Post | Comment , user: User) => {
+export const likeClicked = (item: Post | Comment, user: User) => {
   if (UserLikeBefore(item, user)) {
     // Case 1: User already liked before, remove the like
     return {
@@ -48,6 +47,19 @@ export const dislikeClicked = (item: Post | Comment, user: User) => {
     };
   }
   return item;
+};
+
+export const getTotalLikes = (item: Post | Comment): Number => {
+  return (item.likes?.length || 0) - (item.disLikes?.length || 0)
+}
+
+export const GetUserInteractionMode = (
+  item: Post | Comment,
+  user: User
+): Mode => {
+  if (UserLikeBefore(item,user)) return "liked";
+  else if (UserDisLikeBefore(item,user)) return "disliked";
+  else return "none";
 };
 
 export const UserLikeBefore = (item: Post | Comment, user: User) => {

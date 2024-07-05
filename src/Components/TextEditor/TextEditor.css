@@ -1,0 +1,9 @@
+/* :root {
+    --ck-color-mention-background: black;
+    --ck-color-mention-text: white;
+} */
+
+.ck-content {
+    background: black !important;
+    
+}

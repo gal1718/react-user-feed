@@ -1,0 +1,37 @@
+[
+  {
+    "id": "P1457551",
+    "user_id": "U321ghjk",
+    "title": "Exciting Announcement!",
+    "body": "We are thrilled to share our latest update with you. Stay tuned for more details!",
+    "likes": 0,
+    "published_at":"2024-06-05T07:10:26Z"
+  },
+  {
+    "id": "P1457552",
+    "user_id": "U654lmno",
+    "title": "New Features Coming Soon",
+    "body": "Our team is working hard on some fantastic new features. Get ready for an enhanced experience!",
+    "likes": 2,
+    "imageUrl": "https://images.unsplash.com/photo-1715091362978-363c843c1045?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzAxOTN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTcwODI5MTB8&ixlib=rb-4.0.3&q=80&w=400",
+    "published_at":"2024-06-02T15:10:26Z"
+  },
+  {
+    "id": "P1457553",
+    "user_id": "U987pqrs",
+    "title": "User Feedback Needed",
+    "body": "We value your feedback! Please share your thoughts on our latest update in the comments.",
+    "likes": 1,
+    "imageUrl": "https://images.unsplash.com/photo-1714616397438-8c46797f2c02?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w0NzAxOTN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3MTcwODI4ODd8&ixlib=rb-4.0.3&q=80&w=400",
+    "published_at":"2017-06-02T15:10:26Z"
+  },
+  {
+    "id": "P1457554",
+    "user_id": "Utuv4567",
+    "title": "Maintenance Scheduled",
+    "body": "We will be performing scheduled maintenance on our platform tomorrow from 2 AM to 4 AM. Thank you for your patience.",
+    "likes": 5,
+    "imageUrl": "https://images.unsplash.com/photo-1712847331931-8a0ea66c4904?crop=entropy\u0026cs=tinysrgb\u0026fit=max\u0026fm=jpg\u0026ixid=M3w0NzAxOTN8MXwxfHNlYXJjaHwxfHxsb3ZlfGVufDB8fHx8MTcxNzQxNzU5OHww\u0026ixlib=rb-4.0.3\u0026q=80\u0026w=400",
+    "published_at":"2024-06-02T15:10:26Z"
+  }
+]

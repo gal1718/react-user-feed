@@ -1,0 +1,54 @@
+.avatar-container { 
+    position: relative; 
+    width: 30px; 
+    height: 30px; 
+    border-radius: 50%; 
+    overflow: hidden; 
+} 
+
+.avatar img { 
+    width: 100%; 
+    height: 100%; 
+}
+
+.MuiCard-root{
+    color: white;
+}
+
+.MuiCard-root,
+.MuiTypography-root,
+.MuiCardContent-root,
+.MuiCardActions-root,
+.MuiButton-root {
+  color: white !important;
+}
+
+.MuiTypography-root {
+  color: white !important;
+}
+
+.action-container {
+    display: flex;
+    padding: 3px 6px 3px 6px;
+    justify-content: space-around;
+    align-items: center;
+    background-color: gray;
+    border-radius: 16px;
+    
+}
+
+.icon {
+    cursor: pointer;
+}
+
+.like{
+    color:greenyellow;
+}
+
+.dislike{
+    color:red;
+}
+.Post .MuiCard-root:hover {
+    background-color: #1e1e1e; /* Change this to your desired hover background color */
+  }
+  

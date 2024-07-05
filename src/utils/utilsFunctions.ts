@@ -1,7 +1,7 @@
-import { Post, User, Comment, Mode, BaseContent } from "./typeAndData";
+import { Post, User, Comment, Mode } from "./typeAndData";
 
 
-export const likeClicked =<TData extends {likes?:User[],disLikes?:User[]}> (item:TData, user: User) : TData => {
+export const likeClicked = <TData extends {likes?: User[], disLikes?: User[]}> (item: TData, user: User): TData => {
   if (UserLikeBefore(item, user)) {
     // Case 1: User already liked before, remove the like
     return {
@@ -25,7 +25,7 @@ export const likeClicked =<TData extends {likes?:User[],disLikes?:User[]}> (item
   return item;
 };
 
-export const dislikeClicked = (item: Post | Comment, user: User) : Post | Comment  => {
+export const dislikeClicked = <TData extends {likes?: User[], disLikes?: User[]}> (item: TData, user: User): TData => {
   if (UserDisLikeBefore(item, user)) {
     // Case 2: User already disliked before, remove the dislike
     return {
@@ -49,7 +49,7 @@ export const dislikeClicked = (item: Post | Comment, user: User) : Post | Commen
   return item;
 };
 
-export const getTotalLikes = (item: Post | Comment): number => {
+export const getTotalLikes = <TData extends {likes?: User[], disLikes?: User[]}>(item: TData): number => {
   return (item.likes?.length || 0) - (item.disLikes?.length || 0)
 }
 
@@ -62,14 +62,14 @@ export const GetUserInteractionMode = (
   else return "none";
 };
 
-export const UserLikeBefore = <TData extends {likes?:User[]}> (item: TData, user: User) => {
-  // item.likes?.map((userLiked)=>{
-  //   console.log(userLiked.user_name);
-  // })
+export const UserLikeBefore = <TData extends {likes?: User[]}> (item: TData, user: User): boolean | undefined => {
+  item.likes?.map((userLiked)=>{
+    console.log(userLiked.user_name);
+  })
   return item.likes?.some((userLike) => userLike.id === user.id);
 };
 
-export const UserDisLikeBefore = <TData extends {disLikes?:User[]}> (item: TData, user: User) => {
+export const UserDisLikeBefore = <TData extends {disLikes?: User[]}> (item: TData, user: User): boolean | undefined => {
   item.disLikes?.map((userLiked)=>{
     console.log(userLiked.user_name);
   })

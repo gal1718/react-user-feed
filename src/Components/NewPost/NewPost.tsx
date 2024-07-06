@@ -15,16 +15,17 @@ const NewPost = ({handleSetPosts,posts, LoggedUser}: {handleSetPosts:(newPosts: 
     title: "",
     published_at: ""
   })
-  const [newPostBody, setNewPostBody] = useState<string>("");
+  //const [newPostBody, setNewPostBody] = useState<string>("");
 
   const handlePostAddition = () =>{
-    handleSetPosts([...posts, newPost])
+    handleSetPosts([...posts, {...newPost, published_at: new Date().toISOString()}])
   }
 
   return (
     <div className="NewPost">
-      <input name="title"></input>
-      <TextEditor onChange={setNewPostBody}></TextEditor>
+      <input onChange={(event) => setNewPost({...newPost, title: event.target.value})} name="title"></input>
+      <TextEditor onChange={(data) => setNewPost({...newPost, body: data})}></TextEditor>
+      {/* <TextEditor onChange={setNewPostBody}></TextEditor> */}
       <button onClick={handlePostAddition}>Comment</button>
     
     </div>

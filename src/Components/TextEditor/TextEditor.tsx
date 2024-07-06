@@ -8,7 +8,7 @@ import './TextEditor.css'
 
 const TextEditor = ({onChange
  
-}: {onChange:React.Dispatch<React.SetStateAction<string>>;
+}: {onChange: (data: string) => void;
 
 }) => {
 

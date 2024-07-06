@@ -37,7 +37,7 @@ const PostDetailed = ({
       body: commentHtmlStr,
       comments: undefined,
       id: faker.string.uuid(),
-      published_at: Date.now().toString(),
+      published_at: new Date().toISOString(),
     };
 
     const updatedComments = [...(post.comments ?? []), newComment];

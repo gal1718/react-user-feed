@@ -41,6 +41,8 @@ const CommentComp = ({
 }) => {
   const [commentToCommentHtmlStr, setCommentToCommentHtmlStr] =
     useState<string>("");
+
+    
   let timePassed: undefined | string = moment(
     new Date(comment.published_at)
   ).fromNow();
@@ -169,7 +171,7 @@ const CommentComp = ({
       body: commentToCommentHtmlStr,
       comments: undefined,
       id: faker.string.uuid(),
-      published_at: Date.now().toString(),
+      published_at: new Date().toISOString(),
     };
     var postCommentsCpy = [...(post.comments ?? [])];
 

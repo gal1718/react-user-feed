@@ -1,4 +1,4 @@
-import { Post, User, Comment, Mode } from "./typeAndData";
+import { Post, User, Comment, Mode, SortKey } from "./typeAndData";
 
 
 export const likeClicked = <TData extends {likes?: User[], disLikes?: User[]}> (item: TData, user: User): TData => {
@@ -74,4 +74,18 @@ export const UserDisLikeBefore = <TData extends {disLikes?: User[]}> (item: TDat
     console.log(userLiked.user_name);
   })
   return item.disLikes?.some((userDisLike) => userDisLike.id === user.id);
+};
+
+export const sort = (sortKey: SortKey, items: Comment[] | Post[]) => {
+  const sortedItems = [...items].sort((a, b) => {
+    if (sortKey === "Best") {
+      const netLikesA = (a.likes?.length || 0) - (a.disLikes?.length || 0);
+      const netLikesB = (b.likes?.length || 0) - (b.disLikes?.length || 0);
+      return netLikesB - netLikesA;
+    } else if (sortKey === "published_at") {
+      return new Date(b.published_at).getTime() - new Date(a.published_at).getTime();
+    }
+    return 0;
+  });
+  return sortedItems;
 };

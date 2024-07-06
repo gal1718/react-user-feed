@@ -2,7 +2,7 @@ import React from "react";
 import PostComp from "../Post/Post";
 import BasicSelect from "../BasicSelect/BasicSelect";
 import { type Post, type User, type SortKey } from "../../utils/typeAndData";
-import { GetUserInteractionMode, getTotalLikes } from "../../utils/utilsFunctions";
+import { GetUserInteractionMode, getTotalLikes, sort } from "../../utils/utilsFunctions";
 import { Link } from "react-router-dom";
 import { SxProps } from "@mui/material/styles";
 
@@ -33,19 +33,24 @@ const Posts = ({
 }) => {
   //console.log("POSTS comp render");
 
-  const sort = (sortKey: SortKey) => {
-    const sortedPosts = [...posts].sort((a, b) => {
-      if (sortKey === "Best") {
-        const netLikesA = (a.likes?.length || 0) - (a.disLikes?.length || 0);
-        const netLikesB = (b.likes?.length || 0) - (b.disLikes?.length || 0);
-        return netLikesB - netLikesA;
-      } else if (sortKey === "published_at") {
-        return new Date(b.published_at).getTime() - new Date(a.published_at).getTime();
-      }
-      return 0;
-    });
-    handleSetPosts(sortedPosts);
-  };
+  // const sort = (sortKey: SortKey) => {
+  //   const sortedPosts = [...posts].sort((a, b) => {
+  //     if (sortKey === "Best") {
+  //       const netLikesA = (a.likes?.length || 0) - (a.disLikes?.length || 0);
+  //       const netLikesB = (b.likes?.length || 0) - (b.disLikes?.length || 0);
+  //       return netLikesB - netLikesA;
+  //     } else if (sortKey === "published_at") {
+  //       return new Date(b.published_at).getTime() - new Date(a.published_at).getTime();
+  //     }
+  //     return 0;
+  //   });
+  //   handleSetPosts(sortedPosts);
+  // };
+
+  const handleSort = (sortKey: SortKey) => {
+    const sortedPosts = sort(sortKey, posts);
+    handleSetPosts(sortedPosts as Post[]);
+  }
 
   return (
     <div className="Posts">
@@ -57,7 +62,7 @@ const Posts = ({
           padding: "5%",
         }}
       >
-        <BasicSelect sx={sortStyle} sort={sort}></BasicSelect>
+        <BasicSelect sx={sortStyle} sort={handleSort}></BasicSelect>
         {posts.map((post) => (
           <Link
             key={post.id}
@@ -71,7 +76,7 @@ const Posts = ({
               posts={posts}
               users={users}
               handleSetPosts={handleSetPosts}
-              mode={GetUserInteractionMode(post,LoggedUser)}//post is alreadty updated here
+              mode={GetUserInteractionMode(post,LoggedUser)}
               totalLikes={getTotalLikes(post)}
             ></PostComp>
           </Link>

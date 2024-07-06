@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 //import BasicSelect from "../BasicSelect/BasicSelect";
 import { SxProps } from "@mui/material/styles";
-import { type Post, type Comment, type User } from "../../utils/typeAndData";
+import { type Post, type Comment, type User, SortKey } from "../../utils/typeAndData";
 import CommentComp from "../Comment/Comment";
-import { GetUserInteractionMode, getTotalLikes } from "../../utils/utilsFunctions";
+import { GetUserInteractionMode, getTotalLikes, sort } from "../../utils/utilsFunctions";
+import BasicSelect from "../BasicSelect/BasicSelect";
 
 const sortStyle: SxProps = {
   marginRight: "55%",
@@ -35,9 +36,19 @@ const Comments = ({
   LoggedUser: User;
   handleSetPosts: (newPosts: Post[]) => void;
 }) => {
-  // console.log(
-  //   "comments comp render. comments are: " + JSON.stringify(comments)
-  // );
+
+  const [sortedComments, setSortedComments] = useState<Comment[]>(comments);
+
+  useEffect(()=> {
+    setSortedComments(sort("published_at",comments));
+  },[comments])//
+
+  const handleSort = (sortKey: SortKey) => {
+    const sortedComments = sort(sortKey, comments);
+    setSortedComments(sortedComments as Comment[]);
+  };
+
+
   return (
     <div className="Posts">
       <div
@@ -48,12 +59,13 @@ const Comments = ({
           padding: "5%",
         }}
       >
-        {comments?.map((comment) => (
+        <BasicSelect sx={sortStyle} sort={handleSort}></BasicSelect>
+        {sortedComments?.map((comment) => (
           <CommentComp
             posts={posts}
             mode={GetUserInteractionMode(comment,LoggedUser)}
             totalLikes={getTotalLikes(comment)}
-            key={post.id}
+            key={comment.id}
             post={post}
             comment={comment}
             LoggedUser={LoggedUser}

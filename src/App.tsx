@@ -9,6 +9,7 @@ import {
   User,
   createRandomUser,
   createRandomPost,
+  SortKey,
 } from "./utils/typeAndData";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { faker } from "@faker-js/faker";
@@ -64,6 +65,20 @@ const App = () => {
   const handleSetPosts = (newPosts: Post[]) => {
     localStorage.setItem("posts", JSON.stringify(newPosts));
     setPosts(newPosts);
+  };
+
+  const sort = (sortKey: SortKey) => {
+    const sortedPosts = [...posts].sort((a, b) => {
+      if (sortKey === "Best") {
+        const netLikesA = (a.likes?.length || 0) - (a.disLikes?.length || 0);
+        const netLikesB = (b.likes?.length || 0) - (b.disLikes?.length || 0);
+        return netLikesB - netLikesA;
+      } else if (sortKey === "published_at") {
+        return new Date(b.published_at).getTime() - new Date(a.published_at).getTime();
+      }
+      return 0;
+    });
+    handleSetPosts(sortedPosts);
   };
 
   return (

@@ -4,6 +4,7 @@ import "./Post.css";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
+import parse from "html-react-parser";
 //import Button from "../Button/Button";
 import Typography from "@mui/material/Typography";
 import moment from "moment";
@@ -114,7 +115,7 @@ const PostComp = ({
             gutterBottom={true}
             color="text.secondary"
           >
-            {post.body}
+            {parse(post.body)}
           </Typography>
           {post.imageUrl && (
             <LazyCardMedia

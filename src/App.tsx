@@ -63,7 +63,7 @@ const App = () => {
   }, []);
 
   const handleSetPosts = (newPosts: Post[]) => {
-    localStorage.setItem("posts", JSON.stringify(newPosts));
+    //localStorage.setItem("posts", JSON.stringify(newPosts));//space limitations .ckeditor upload images
     setPosts(newPosts);
   };
 

@@ -2,6 +2,7 @@
 import * as React from "react";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import MyUploadAdapter from "../../utils/MyUploadAdapter";
 import './TextEditor.css'
 //import 'ckeditor5/ckeditor5.css';
 
@@ -18,6 +19,10 @@ const TextEditor = ({onChange
         editor={ClassicEditor}
         data="<p>Hello from CKEditor&nbsp;5!</p>"
         onReady={(editor) => {
+          editor.plugins.get('FileRepository').createUploadAdapter = (loader: any) => {
+            return new MyUploadAdapter(loader);
+         
+        };
           // You can store the "editor" and use when it is needed.
           //console.log( 'Editor is ready to use!', editor );
         }}
